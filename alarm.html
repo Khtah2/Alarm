@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Alarm Clock" content="Alarm Clock for CN Skill Test" />
+    
+    <title>Alarm Clock</title>
+
+    <!--Favicon-->
+    <link rel="icon" href="https://library.kissclipart.com/20191014/aie/kissclipart-clock-icon-management-icon-time-icon-474c4db05c8d3baf.png" />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-title">
+        <h1>ALARM CLOCK</h1>
+    </div>
+    <div class="container">
+        <div class="current-time">
+            <span id="current-time">_ : _ : _ </span>
+        </div>
+        <form class="alarm-form">
+            <div class="select-container">
+                <select name="hours" id="hours" required></select>
+                <select required name="minutes" id="minutes"></select>
+                <select required name="seconds" id="seconds"></select>
+                <select required name="am-pm" id="am-pm">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+            </div>
+            <button id="submitButton" type="submit" onclick="document.getElementById('setted').innerHTML = 'Setted'">Set Alarm</button>
+        </form>
+        <div class="status-container">
+            <div id="setted">Not Set</div>
+        </div>
+    </div>
+    <!-- JavaScript File -->
+    <script>
+        const currentTime = document.querySelector("#current-time");
+        const setHours = document.querySelector("#hours");
+        const setMinutes = document.querySelector("#minutes");
+        const setSeconds = document.querySelector("#seconds");
+        const setAmPm = document.querySelector("#am-pm");
+        const setAlarmButton = document.querySelector("#submitButton");
+        const alarmContainer = document.querySelector("#alarms-container");
+        window.addEventListener("DOMContentLoaded", (event) => {
+  
+        dropDownMenu(1, 12, setHours);
+ 
+        dropDownMenu(0, 59, setMinutes);
+
+        dropDownMenu(0, 59, setSeconds);
+
+        setInterval(getCurrentTime);
+        });
+
+        setAlarmButton.addEventListener("click", getInput);
+        function dropDownMenu(start, end, element) {
+            for (let i = start; i <= end; i++) {
+                const dropDown = document.createElement("option");
+                dropDown.value = i < 10 ? "0" + i : i;
+                dropDown.innerHTML = i < 10 ? "0" + i : i;
+                element.appendChild(dropDown);
+            }
+        }
+
+        function getCurrentTime() {
+            let time = new Date();
+            time = time.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+                hour12: true,
+            });
+            currentTime.innerHTML = time;
+            return time;
+        }
+        function getInput(e) {
+            e.preventDefault();
+            const hourValue = setHours.value;
+            const minuteValue = setMinutes.value;
+            const secondValue = setSeconds.value;
+            const amPmValue = setAmPm.value;
+            const alarmTime = convertToTime(
+                hourValue,
+                minuteValue,
+                secondValue,
+                amPmValue
+            );
+            setAlarm(alarmTime);
+        }
+        function convertToTime(hour, minute, second, amPm) {
+            return `${parseInt(hour)}:${minute}:${second} ${amPm}`;
+        }
+        function setAlarm(time) {
+            const alarm = setInterval(() => {
+                if (time === getCurrentTime()) {
+                    alert("Alarm Ringing");
+                    location.reload()
+                }
+            });
+            addAlaramToDom(time, alarm);
+        }
+    </script>
+  </body>
+</html>
+</html>
